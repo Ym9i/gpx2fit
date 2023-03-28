@@ -1,0 +1,5 @@
+fit-tool==0.9.13
+geopy==2.3.0
+gpxpy==1.5.0
+python-dotenv==1.0.0
+stravalib
