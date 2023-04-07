@@ -10,6 +10,7 @@ from fit_tool.profile.profile_type import FileType, Manufacturer, Event, EventTy
 
 from config import GPX_INPUT_DIR, FIT_OUTPUT_DIR, SPORT_TYPE
 
+
 def gpx2fit(gpx_file_path: str):
     """This example shows how to encode an activity into the FIT format and write it to a file. For simplicity, this
     example uses the FitFileBuilder to construct the FIT file, however in practice you might want to encode and
@@ -18,17 +19,23 @@ def gpx2fit(gpx_file_path: str):
     """
 
     # set fit file name
-    fit_file_name = gpx_file_path.split('/')[1].replace('.gpx', '.fit').replace('.GPX', '.fit')
+    fit_file_name = (
+        gpx_file_path.split("/")[1].replace(".gpx", ".fit").replace(".GPX", ".fit")
+    )
 
     # Set auto_define to true, so that the builder creates the required Definition Messages for us.
     builder = FitFileBuilder(auto_define=True, min_string_size=50)
 
     # Read position data from a GPX file
-    gpx_file = open(gpx_file_path, 'r')
+    gpx_file = open(gpx_file_path, "r")
     gpx = gpxpy.parse(gpx_file)
 
     # check file, at least one track, one segment, one point
-    if len(gpx.tracks) == 0 or len(gpx.tracks[0].segments) == 0 or len(gpx.tracks[0].segments[0].points) == 0:
+    if (
+        len(gpx.tracks) == 0
+        or len(gpx.tracks[0].segments) == 0
+        or len(gpx.tracks[0].segments[0].points) == 0
+    ):
         print("invalid gpx file: ", gpx_file_path)
         return
 
@@ -44,16 +51,16 @@ def gpx2fit(gpx_file_path: str):
     message.product = 0
     message.time_created = now_timestamp_millis
     message.serial_number = 0x12345678
-    
+
     builder.add(message)
 
     # ------ add sport type
     from fit_tool.profile.messages.session_message import SessionMessage
+
     message = SessionMessage()
     message.sport = SPORT_TYPE
 
     builder.add(message)
-    
 
     # It is a best practice to include timer start and stop events in all Activity files. A timer start event
     # should occur before the first Record message in the file, and a timer stop event should occur after the
@@ -65,8 +72,6 @@ def gpx2fit(gpx_file_path: str):
     message.event = Event.TIMER
     message.event_type = EventType.START
     message.timestamp = start_timestamp
-    
-
 
     builder.add(message)
 
@@ -110,22 +115,24 @@ def gpx2fit(gpx_file_path: str):
     # Finally build the FIT file object and write it to a file
     fit_file = builder.build()
 
-    out_path = FIT_OUTPUT_DIR + '/' + fit_file_name
+    out_path = FIT_OUTPUT_DIR + "/" + fit_file_name
     fit_file.to_file(out_path)
+
 
 def get_file_list() -> list[str]:
     files = os.listdir(GPX_INPUT_DIR)
     result_files = []
     for file in files:
-        if file.endswith('.gpx'):
+        if file.endswith(".gpx"):
             result_files.append(os.path.join(GPX_INPUT_DIR, file))
 
     return result_files
 
+
 def main():
-    print('Start Processing!')
+    print("Start Processing!")
     files = get_file_list()
-    
+
     for file in files:
         gpx2fit(file)
 

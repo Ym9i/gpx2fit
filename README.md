@@ -42,7 +42,7 @@ Strava API Rate Limit Timeout. Retry in 799.491622 seconds
 
 ## TO DO
 - [x] Upload fit to Strava
-- [ ] Format Python code
+- [x] Format Python code by black
 
 ## Thanks
 [stagescycling/python_fit_tool](https://bitbucket.org/stagescycling/python_fit_tool/src/main)
